@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+
+<precice-configuration>
+
+  <solver-interface dimensions="2">
+
+    <data:scalar name="Nothing"/>
+
+    <mesh name="EigenPreciceMesh">
+      <use-data name="Nothing" />
+    </mesh>
+
+    <mesh name="NobodysMesh">
+      <use-data name="Nothing" />
+    </mesh>
+
+    <participant name="Nobody">
+      <use-mesh name="NobodysMesh" provide="yes"/>
+      <read-data name="Nothing" mesh="NobodysMesh"/>
+    </participant>    
+
+    <participant name="EigenPrecice">
+      <use-mesh name="EigenPreciceMesh" provide="yes"/>
+      <use-mesh name="NobodysMesh" from="Nobody"/>
+      <write-data name="Nothing" mesh="EigenPreciceMesh"/>
+      <mapping:nearest-neighbor direction="write" from="EigenPreciceMesh" to="NobodysMesh" constraint="consistent"/>       
+    </participant>
+
+    <m2n:sockets from="EigenPrecice" to="Nobody" distribution-type="gather-scatter" network="lo" exchange-directory="/tmp/coupling" />
+    
+    
+    <coupling-scheme:serial-explicit>
+      <participants first="EigenPrecice" second="Nobody"/>
+      <max-time value="1"/>
+      <timestep-length value="1" />
+      <exchange data="Nothing" mesh="NobodysMesh" from="EigenPrecice" to="Nobody" initialize="false" />
+    </coupling-scheme:serial-explicit>
+  </solver-interface>
+</precice-configuration>
+
