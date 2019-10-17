@@ -22,6 +22,7 @@ int main(int argc, char* argv[])
 
   constexpr int matrixSize = 3;
   A.resize( matrixSize, matrixSize );
+  A.data().squeeze();
   A.reserve( matrixSize );
   std::vector<Eigen::Triplet<double>> matrixData(matrixSize);
   Eigen::VectorXd b( matrixSize );
